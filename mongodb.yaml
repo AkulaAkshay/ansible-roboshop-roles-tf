@@ -1,0 +1,7 @@
+- name: setup mongodb server
+  hosts: mongodb
+  become: yes
+  roles:
+  - mongodb
+
+# ansible roles? --> (like DRY) ansible roles is following a proper directory structure for creating the playbooks inorder to  maintain the playbooks and reusing the playbooks. roles will have tasks, files, vars, defaults, handlers, templates. By default roles will try to load main.yaml in each directory

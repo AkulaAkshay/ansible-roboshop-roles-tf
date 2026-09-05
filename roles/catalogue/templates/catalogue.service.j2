@@ -1,0 +1,24 @@
+[Unit]
+Description = Catalogue Service
+
+[Service]
+User=roboshop
+Environment=MONGO=true
+// highlight-start
+Environment=MONGO_URL="mongodb://{{ MONGODB_HOST }}:27017/catalogue" 
+// highlight-end
+ExecStart=/bin/node /app/server.js
+SyslogIdentifier=catalogue
+
+[Install]
+WantedBy=multi-user.target
+
+#since MONGO_URL="mongodb://mongodb.akshaysunny.space:27017/catalogue" --> this is a variable (depends on the environment like if it is 1. DEV environment --> mongodb-dev.akshaysunny.space, 2. QA environment --> mongodb-qa.akshaysunny.space, 3. prod environment --> mongodb.akshaysunny.space; this variable may change). so, when we have this type of variables in a file we keep that file in a template folder
+
+#template -> fixed form with the place holders ; we should perform templatising
+#templatising file is nothing but keeping the placeholders, submitting the actual values of the placeholders at runtime itself.
+# there is something called "jinja2" templating. ( catalogue.service.js --> here keeping ".j2" extension is not mandatory. we are keeping it just for the readability )
+#MONGODB_HOST --> we already kept in the variables
+
+#ansible template are jinja2 formatted files, there will be placeholders inside the file, actual values will be submitted at runtime and files will be copied to remote server or destination server
+#(instead of ansible.builtin.copy: --> ansible.builtin.template: we should use this)

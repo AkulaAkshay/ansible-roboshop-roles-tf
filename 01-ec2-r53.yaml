@@ -1,0 +1,71 @@
+- name: create ec2 instance and update r53 record
+  hosts: local
+  connection: local
+  vars:
+    ami_id: ami-0220d79f3f480ecf5 # generally in shell scripting we use upper case, in ansible we use lower case while defining the variable . It is a general notion its up to us whether we follow it or not
+    sg_id: sg-0a6ae722a96642f1b
+    zone_id: Z02237942WL8S6DN4RI1T
+    domain_name: akshaysunny.space
+    # instances:
+    # - mongodb
+    # - rabbitmq
+    # instead of passing the names (mysql, cart,..) firstly, the doing push and pulling is a bit tedious task . so, we will pass the names as srguments in the command line itself by using "-e". 
+    #example: ---- -e "instances=['cart','user','catalogue']" --> should not provide any space inside list
+
+    
+  tasks:
+  - name: creating an ec2 instance
+    amazon.aws.ec2_instance:
+      name: "{{ item }}"
+      instance_type: t3.micro
+      security_group: "{{ sg_id }}"
+      image_id: "{{ ami_id }}"
+      tags:
+        Name: "{{ item }}"
+    loop: "{{ instances }}"
+    register: ec2_output
+
+  - name: printing the output
+    ansible.builtin.debug:
+     msg: "{{ ec2_output }}" 
+
+#------------------------------------------------just for testing purpose
+  # - name: printing the output
+  #   ansible.builtin.debug:
+  #     msg: "{{ ec2_output }}"
+
+  # - name: print public_ip address
+  #   ansible.builtin.debug:
+  #     msg: "{{ item.instances[0].public_ip_address }}"
+  #   loop: "{{ ec2_output.results }}"
+
+  # - name: print private_ip address
+  #   ansible.builtin.debug:
+  #     msg: "{{ item.instances[0].private_ip_address }}"
+  #   loop: "{{ ec2_output.results }}"
+#------------------------------------------------
+
+  - name: create r53 record
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ item.item }}.{{ domain_name }}" #mongodb.akshaysunny.space
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].private_ip_address }}"
+      overwrite: true
+    loop: "{{ ec2_output.results }}"
+
+
+# we are creating one record with  public ip only for frontend
+  - name: create route53 record for frontend
+    amazon.aws.route53:
+      state: present
+      zone: "{{ domain_name }}"
+      record: "{{ domain_name }}" # akshaysunny.space
+      type: A
+      ttl: 1
+      value: "{{ item.instances[0].public_ip_address }}"
+      overwrite: true
+    when: item.item == "frontend"
+    loop: "{{ ec2_output.results }}"

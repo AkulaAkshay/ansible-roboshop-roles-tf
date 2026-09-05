@@ -1,0 +1,38 @@
+- name: Add application User
+  ansible.builtin.user:
+    name: roboshop
+    comment: roboshop system user
+    system: true #this means system user
+    shell: /sbin/nologin
+    home: /app 
+
+# safe to remove the directory because whenever we run for the 2nd time, ansible thinks that /app already exists. so, no need to create once again and eventually new code will not be downloaded. so, firstly we remove the app and then create /app directory freshely and download the clean code
+
+- name: remove the /app directory
+  ansible.builtin.file:
+    name: /app
+    state: absent
+
+# how does the idempotency check happens here? --> in linux,shell we should explicitly check whether user is present or not, we should create user only if dosen't exists. But in ansible by default it is idempotenet ansible handles this, hence ansible in background checks whether user exists or not and will only create only if user is not present
+
+- name: create a directory if dosen't exists
+  ansible.builtin.file:
+    state: directory
+    path: /app
+
+# above we deleted the /app directory and now we will delete catalogue.zip file if present
+- name: delete {{ component }}.zip file
+  ansible.builtin.file:
+    state: absent
+    path: /tmp/{{ component }}.zip
+    
+- name: download DEV written code - {{ component }} application
+  ansible.builtin.get_url:
+    url: https://roboshop-artifacts.s3.amazonaws.com/{{ component }}-v3.zip
+    dest: /tmp/{{ component }}.zip 
+
+- name: extract catalogue application - unzipping
+  ansible.builtin.unarchive:
+    src: /tmp/{{ component }}.zip
+    dest: /app 
+    remote_src: yes

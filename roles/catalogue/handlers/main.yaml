@@ -1,0 +1,6 @@
+- name: daemon reload
+  # systemctl daemon-reload
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+
+#what are handlers or notifiers? -> (notify --> keyword) handlers are like notifiers, when there is a change in a particular task then we can notify another task, if there is no change then no need of notifying to another system. Its an inbuilt feature that ansible provides(think like yellow colour- change; green- success but no change; red- fail in mobaxterm UI)

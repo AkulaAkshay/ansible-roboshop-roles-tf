@@ -1,0 +1,12 @@
+# if we want to define variables which are used by all the roles, we can define in this directory (wich 
+#is not inside the roles folder scope, i.e., outside of the roles folder scope)
+
+MONGODB_HOST: mongodb.akshaysunny.space
+REDIS_HOST: redis.akshaysunny.space
+MYSQL_HOST: mysql.akshaysunny.space
+RABBITMQ_HOST: rabbitmq.akshaysunny.space
+CATALOGUE_HOST: catalogue.akshaysunny.space
+CART_HOST: cart.akshaysunny.space
+USER_HOST: user.akshaysunny.space
+SHIPPING_HOST: shipping.akshaysunny.space
+PAYMENT_HOST: payment.akshaysunny.space

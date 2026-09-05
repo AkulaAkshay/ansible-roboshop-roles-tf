@@ -1,0 +1,35 @@
+- name: include vs import
+  hosts: local
+  connection: local
+  become: yes
+  roles:
+  - include-import
+
+#include rolevs import role
+#include role --> The roles which we are extracting (i.e., catalogue, common,..) those are included at runtime. It includes roles at runtime, checks while processing. (include is at runtime --> it firstly starts the execution then after if encoounters error it  will stop) 
+#import role --> The roles which we are extracting those are included before execution. It imports the role before execution and parse it, checks before processing (import before runtime ie., it is static --> it cheks the whole playbook, if everything is fine only then it execute). Applying tags at the import, will setup to all the tasks automatically
+
+#how much respect does tags get?
+# - name: nodejs setup
+#   ansible.builtin.import_role: import role
+#     name: common
+#     tasks_from: app_setup.yaml
+#   tags: # if we give tags here that means whole app_setup.yaml code will respect this deployment tags
+#   - deployment
+
+  # - name: app setup
+  #   ansible.builtin.include_role:
+  #     name: common
+  #     tasks_from: app_setup.yaml
+  #   tags:
+  #   - deployment
+
+#include will not respect tags --> even if we provides tags it treats like no tags ever existed ( -t deployment --> if we run this, then this will be skipped, will not be executed)
+#include will not respect tags, we must explicitly set inside the tasks 
+- name: install dependencies
+  community.general.npm:
+    path: /app
+  tags:
+  - deploy
+
+

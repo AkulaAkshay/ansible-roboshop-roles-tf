@@ -1,0 +1,42 @@
+- name: app setup
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app_setup.yaml
+  tags:
+  - deployment
+# if we want to run only a specific a specific block of a playbook (Ansible tags are text metadata labels assigned to tasks, plays, blocks, or roles that allow you to selectively run or skip specific parts of a playbook at runtime.)
+
+- name: nodejs setup
+  #ansible.builtin.import_role:
+  ansible.builtin.include_role:
+    name: common
+    tasks_from: nodejs_setup.yaml #include will not respect tags --> even if we provides tags it treats like no tags ever existed ( -t deployment --> if we run this, then this will be skipped, will not be executed)
+  tags:
+  - deployment
+
+- name: copy mongo repo
+  ansible.builtin.copy:
+    src: mongo.repo
+    dest: /etc/yum.repos.d/mongo.repo
+
+- name: install mongodb client
+  ansible.builtin.package:
+    name: mongodb-mongosh
+    state: present
+
+- name: connnect to mongodb catalogue
+  ansible.builtin.command: mongosh {{ MONGODB_HOST }} --quiet --eval "db.getMongo().getDBNames().indexOf('catalogue')"
+  register: catalogue_output
+
+- name: load products into mongodb
+  ansible.builtin.shell: mongosh --host {{ MONGODB_HOST }} </app/db/master-data.js
+  when: catalogue_output.stdout | int < 0
+
+- name: systemd setup
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: system_setup.yaml
+  tags:
+  - deployment
+
+#var also called as defaults i.e., MONGODB_HOST=mongodb.akshaysunny.space

@@ -1,0 +1,5 @@
+dependencies:
+  - role: common
+# catalogue is a role, common is another role ; what dependencies we have for catalogue in role level (mongodb dependencies is another type of dependency , we are specifically talking about role level dependencies i.e., we have dependency of common) catalogue role is dependent on common role 
+#we can mention all the dependencies present in a role in meta folder; when we run catalogue it firstly check for main.yaml file in meta folder whether all the dependencies mentioned in this file are present or not , if all the dependencies are not present then it fails staright away.
+# meta data --> not the actual deta the structual data -->  "data about data." It provides context, structure, and details about a specific piece of information or file without being the content itself. Think of a book: the story inside is the data, while the title, author, page count, and ISBN number are the metadata
