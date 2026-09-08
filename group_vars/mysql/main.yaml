@@ -1,6 +1,6 @@
 #system manager -> parameter store -> create parameter
 
-MYSQL_ROOT_PASSWORD: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/{{ environment }}/mysql/mysql_root_password', decrypt=true, region='us-east-1') }}"
+MYSQL_ROOT_PASSWORD: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/{{ env }}/mysql/mysql_root_password', decrypt=true, region='us-east-1') }}"
 
 
 # {
