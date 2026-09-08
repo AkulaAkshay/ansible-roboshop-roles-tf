@@ -1,3 +1,41 @@
 #system manager -> parameter store -> create parameter
 
-MYSQL_ROOT_PASSWORD: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/mysql/mysql_root_password', decrypt=true, region='us-east-1') }}"
+MYSQL_ROOT_PASSWORD: "{{ lookup('amazon.aws.aws_ssm', '/roboshop/{{ environment }}/mysql/mysql_root_password', decrypt=true, region='us-east-1') }}"
+
+
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "ssm:GetParameter",
+#         "ssm:GetParameters",
+#         "ssm:GetParametersByPath"
+#       ],
+#       "Resource": "arn:aws:ssm:*:*:parameter/*"
+#     },
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "ssm:DescribeParameters"
+#       ],
+#       "Resource": "*"
+#     }
+#   ]
+# }
+
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "ssm:GetParameter",
+#         "ssm:GetParameters",
+#         "ssm:GetParametersByPath"
+#       ],
+#       "Resource": "arn:aws:ssm:*:*:parameter/*"
+#     }
+#   ]
+# }
