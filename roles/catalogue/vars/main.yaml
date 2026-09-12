@@ -2,6 +2,6 @@
 MONGODB_HOST: mongodb-{{ env }}.akshaysunny.space
 #var also called as defaults i.e., MONGODB_HOST=mongodb.akshaysunny.space
 
-#here in this vars folder , we can keep the variables which are specific to the catalogue component ; which are used by all the componts we can keep them in group_vars folder
+#here in this vars folder , we can keep the variables which are specific to the catalogue component ; which are used by all the components we can keep them in group_vars folder
 
-SPECIFIC_VAR: sepcific-value
+#SPECIFIC_VAR: sepcific-value
