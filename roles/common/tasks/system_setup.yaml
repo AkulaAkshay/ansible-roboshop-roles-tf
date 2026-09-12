@@ -17,11 +17,10 @@
     src: "{{ component }}.service.j2"
     dest: "/etc/systemd/system/{{ component }}.service" # ansible compares not only the file changes it also compares the content changes ( .service file chnages then notify executes and if we have made changes  in the .service file even then the notify will be executed. --> same as git even if we write #comments even then notify will be executed)
   notify: daemon reload
+    #instead of ansible.builtin.copy: --> we need to use ansible.builtin.template:
 
 - name: start the service
   ansible.builtin.service:
     name: "{{ component }}"
     state: restarted
     enabled: yes
-
-    #instead of ansible.nuiltin.copy: --> we need to use ansible.builtin.template:
